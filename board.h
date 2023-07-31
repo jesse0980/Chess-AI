@@ -274,7 +274,7 @@ class Board{
             track[c[0]][c[1]].y = start[1];
             return;
         }
-
+        track[c[0]][c[1]].start = false;
         vector<int> startSQ = getSquare(start[0], start[1]);
         tracker[startSQ[0]][startSQ[1]].filled = false;
         tracker[sq[0]][sq[1]].filled = true;
@@ -292,20 +292,32 @@ class Board{
         track[c[0]][c[1]].y = loc[1];
     }
 
-    bool checkPawn(vector<int> piece, vector<int> sq, vector<int>start){
+    bool checkBlackPawn(vector<int> piece, vector<int> sq, vector<int>start){
         vector<int> startSQ = getSquare(start[0], start[1]);
         
         if(sq[1] >= 0 && sq[1] + 1 == startSQ[1] && sq[0] == startSQ[0]){
-            track[piece[0]][piece[1]].start = false;
             return true;
         }
         else if(sq[1] + 2 == startSQ[1] && sq[0] == startSQ[0] && track[piece[0]][piece[1]].start == true){
-            track[piece[0]][piece[1]].start = false;
             return true;
         }
         //cout << startSQ[0] << " " << startSQ[1] << " END: " << sq[0] << " " << sq[1] << endl;
         return false;
     }
+
+    bool checkRedPawn(vector<int> piece, vector<int> sq, vector<int>start){
+        vector<int> startSQ = getSquare(start[0], start[1]);
+        
+        if(sq[1] < 8 && sq[1] - 1 == startSQ[1] && sq[0] == startSQ[0]){
+            return true;
+        }
+        else if(sq[1] - 2 == startSQ[1] && sq[0] == startSQ[0] && track[piece[0]][piece[1]].start == true){
+            return true;
+        }
+        //cout << startSQ[0] << " " << startSQ[1] << " END: " << sq[0] << " " << sq[1] << endl;
+        return false;
+    }
+
     bool checkKing(vector<int> piece, vector<int> sq, vector<int>start){
         vector<int> startSQ = getSquare(start[0], start[1]);
 
@@ -451,11 +463,57 @@ class Board{
         return true;
 
     }
+    
+    bool blocked(int r, int con, int small, int big){
+            if(r == 0){
+                for(int i = small + 1; i < big; i++){
+                        if(tracker[con][i].filled){
+                            cout << "blocked" << endl;
+                            return false;
+                        }
+                    }
+            }
+            else{
+                for(int i = small + 1; i < big; i++){
+                        if(tracker[i][con].filled){
+                            cout << "blocked" << endl;
+                            return false;
+                        }
+                    }
+            }
+            return true;
+    }
+    bool checkBlockedRows(vector<int> piece, vector<int> sq, vector<int>start){
+        vector<int> startSQ = getSquare(start[0], start[1]);
+        if(sq[0] == startSQ[0]){
+            if(sq[1] > startSQ[1]){
+                return blocked(0, sq[0], startSQ[1], sq[1]);
+            }
+            else{
+                return blocked(0, sq[0], sq[1], startSQ[1]);
+            }
+        }
+        else if(sq[0] > startSQ[0] && sq[1] == startSQ[1]){
+            return blocked(1, sq[1], startSQ[0], sq[0]);
+        }
+        else if(sq[1] == startSQ[1]){
+            return blocked(1, sq[1], sq[0], startSQ[0]);
+        }
+        return true;
+    }
     bool isValidMove(vector<int> piece, vector<int> sq, vector<int>start){
         
         if(track[piece[0]][piece[1]].type == 'p'){
             cout << "is a paWN" << endl;
-            return checkPawn(piece, sq, start) && checkFilled(piece, sq, start);
+            bool p = false;
+            if(track[piece[0]][piece[1]].team == 'B'){
+                p = checkBlackPawn(piece, sq, start);
+            }
+            else{
+                p = checkRedPawn(piece, sq, start);
+            }
+            bool b = checkBlockedRows(piece, sq, start);
+            return p && checkFilled(piece, sq, start) && b;
         }
         if(track[piece[0]][piece[1]].type == 'K'){
             cout << "its the king" << endl;
@@ -466,12 +524,14 @@ class Board{
             return checkDiag(piece, sq, start) && checkFilled(piece, sq, start);
         }
         if(track[piece[0]][piece[1]].type == 'r'){
+            bool b = checkBlockedRows(piece, sq, start);
             cout << "It's the rook" << endl;
-            return checkRows(piece, sq, start) && checkFilled(piece, sq, start);
+            return checkRows(piece, sq, start) && checkFilled(piece, sq, start) && b;
         }
         if(track[piece[0]][piece[1]].type == 'q'){
             cout << "It's the Queen!" << endl;
-            return (checkRows(piece, sq, start) || checkDiag(piece, sq, start)) && checkFilled(piece, sq, start);
+            bool b = checkBlockedRows(piece, sq, start);
+            return (checkRows(piece, sq, start) || checkDiag(piece, sq, start)) && checkFilled(piece, sq, start) && b;
         }
         if(track[piece[0]][piece[1]].type == 'k'){
             cout << "It's the knight" << endl;
