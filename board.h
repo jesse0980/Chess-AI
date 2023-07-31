@@ -512,8 +512,10 @@ class Board{
             else{
                 p = checkRedPawn(piece, sq, start);
             }
-            bool b = checkBlockedRows(piece, sq, start);
-            return p && checkFilled(piece, sq, start) && b;
+            if(!checkBlockedRows(piece, sq, start)){
+                return false;
+            }
+            return p && checkFilled(piece, sq, start);
         }
         if(track[piece[0]][piece[1]].type == 'K'){
             cout << "its the king" << endl;
@@ -524,14 +526,18 @@ class Board{
             return checkDiag(piece, sq, start) && checkFilled(piece, sq, start);
         }
         if(track[piece[0]][piece[1]].type == 'r'){
-            bool b = checkBlockedRows(piece, sq, start);
+            if(!checkBlockedRows(piece, sq, start)){
+                return false;
+            }
             cout << "It's the rook" << endl;
-            return checkRows(piece, sq, start) && checkFilled(piece, sq, start) && b;
+            return checkRows(piece, sq, start) && checkFilled(piece, sq, start);
         }
         if(track[piece[0]][piece[1]].type == 'q'){
             cout << "It's the Queen!" << endl;
-            bool b = checkBlockedRows(piece, sq, start);
-            return (checkRows(piece, sq, start) || checkDiag(piece, sq, start)) && checkFilled(piece, sq, start) && b;
+            if(!checkBlockedRows(piece, sq, start)){
+                return false;
+            }
+            return (checkRows(piece, sq, start) || checkDiag(piece, sq, start)) && checkFilled(piece, sq, start);
         }
         if(track[piece[0]][piece[1]].type == 'k'){
             cout << "It's the knight" << endl;
