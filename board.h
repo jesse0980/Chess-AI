@@ -294,7 +294,14 @@ class Board{
 
     bool checkBlackPawn(vector<int> piece, vector<int> sq, vector<int>start){
         vector<int> startSQ = getSquare(start[0], start[1]);
-        
+
+        if(tracker[sq[0]][sq[1]].filled && sq[1] + 1 == startSQ[1] && (sq[0] + 1 == startSQ[0] || sq[0] - 1 == startSQ[0])){
+            return true;
+        }
+        else if(tracker[sq[0]][sq[1]].filled){
+                cout << "Pawn cannot attack straight" << endl;
+                return false;
+            }
         if(sq[1] >= 0 && sq[1] + 1 == startSQ[1] && sq[0] == startSQ[0]){
             return true;
         }
@@ -307,7 +314,14 @@ class Board{
 
     bool checkRedPawn(vector<int> piece, vector<int> sq, vector<int>start){
         vector<int> startSQ = getSquare(start[0], start[1]);
-        
+        if(tracker[sq[0]][sq[1]].filled && sq[1] - 1 == startSQ[1] && (sq[0] + 1 == startSQ[0] || sq[0] - 1 == startSQ[0])){
+            return true;
+        }
+        else if(tracker[sq[0]][sq[1]].filled){
+                cout << "Pawn cannot attack straight" << endl;
+                return false;
+            }
+
         if(sq[1] < 8 && sq[1] - 1 == startSQ[1] && sq[0] == startSQ[0]){
             return true;
         }
@@ -468,7 +482,7 @@ class Board{
             if(r == 0){
                 for(int i = small + 1; i < big; i++){
                         if(tracker[con][i].filled){
-                            cout << "blocked" << endl;
+                            cout << "row blocked" << endl;
                             return false;
                         }
                     }
@@ -476,7 +490,7 @@ class Board{
             else{
                 for(int i = small + 1; i < big; i++){
                         if(tracker[i][con].filled){
-                            cout << "blocked" << endl;
+                            cout << "row blocked" << endl;
                             return false;
                         }
                     }
@@ -501,6 +515,71 @@ class Board{
         }
         return true;
     }
+    
+    bool checkBlockDiag(vector<int> piece, vector<int> sq, vector<int>start){
+        vector<int> startSQ = getSquare(start[0], start[1]);
+        for(int i = 0; i < 8; ++i){
+            if(sq[0] >= 0 && sq[0] + i == startSQ[0] && sq[1] >= 0 && sq[1] + i == startSQ[1]){
+                int r = sq[0] + 1;
+                int c = sq[1] + 1;
+
+                while(r != startSQ[0] && c != startSQ[1]){
+                    if(tracker[r][c].filled){
+                        cout << "Diag Blocked" << endl;
+                        return false;
+                    }
+                    r += 1;
+                    c += 1;  
+                }
+                return true;
+            }
+            if(sq[0] < 8 && sq[0] - i == startSQ[0] && sq[1] < 8 && sq[1] - i == startSQ[1]){
+                int r = sq[0] - 1;
+                int c = sq[1] - 1;
+
+                while(r != startSQ[0] && c != startSQ[1]){
+                    if(tracker[r][c].filled){
+                        cout << "Diag Blocked" << endl;
+                        return false;
+                    }
+                    r -= 1;
+                    c -= 1;  
+                }
+                return true;
+            }
+            if(sq[0] < 8 && sq[0] - i == startSQ[0] && sq[1] >= 0 && sq[1] + i == startSQ[1]){
+
+                int r = sq[0] - 1;
+                int c = sq[1] + 1;
+
+                while(r != startSQ[0] && c != startSQ[1]){
+                    if(tracker[r][c].filled){
+                        cout << "Diag Blocked" << endl;
+                        return false;
+                    }
+                    r -= 1;
+                    c += 1;  
+                }
+                return true;
+            }
+            if(sq[0] >= 0 && sq[0] + i == startSQ[0] && sq[1] < 8 && sq[1] - i == startSQ[1]){
+                int r = sq[0] + 1;
+                int c = sq[1] - 1;
+
+                while(r != startSQ[0] && c != startSQ[1]){
+                    if(tracker[r][c].filled){
+                        cout << "Diag Blocked" << endl;
+                        return false;
+                    }
+                    r += 1;
+                    c -= 1;  
+                }
+                return true;
+            }
+        }
+        return true;
+    }
+    
     bool isValidMove(vector<int> piece, vector<int> sq, vector<int>start){
         
         if(track[piece[0]][piece[1]].type == 'p'){
@@ -523,6 +602,9 @@ class Board{
         }
         if(track[piece[0]][piece[1]].type == 'b'){
             cout << "its the bishop" << endl;
+            if(!checkBlockDiag(piece, sq, start)){
+                return false;
+            }
             return checkDiag(piece, sq, start) && checkFilled(piece, sq, start);
         }
         if(track[piece[0]][piece[1]].type == 'r'){
@@ -534,7 +616,7 @@ class Board{
         }
         if(track[piece[0]][piece[1]].type == 'q'){
             cout << "It's the Queen!" << endl;
-            if(!checkBlockedRows(piece, sq, start)){
+            if(!checkBlockedRows(piece, sq, start) || !checkBlockDiag(piece, sq, start)){
                 return false;
             }
             return (checkRows(piece, sq, start) || checkDiag(piece, sq, start)) && checkFilled(piece, sq, start);
@@ -544,6 +626,38 @@ class Board{
             return checkKnight(piece, sq, start) && checkFilled(piece, sq, start);
         }
         return false;
+    }
+
+    int isOver(){
+        vector<int> black;
+        vector<int> white;
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 8; j++){
+                if(track[i][j].type == 'K'){
+                    if(track[i][j].taken){
+                        if(track[i][j].team == 'B'){
+                            return 1;
+                        }
+                        return 2;
+                    }
+
+                    if(track[i][j].team == 'B'){
+                        black.push_back(i);
+                        black.push_back(j);
+                    }
+                    else{
+                        white.push_back(i);
+                        white.push_back(j);
+                    }
+                    }
+                }
+            }
+        vector<int> b = getSquare(tracker[black[0]][black[1]].x, tracker[black[0]][black[1]].y);
+        vector<int> w = getSquare(tracker[white[0]][white[1]].x, tracker[white[0]][white[1]].y);
+
+        
+        
+        return 0;
     }
 
 };
