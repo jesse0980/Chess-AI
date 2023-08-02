@@ -253,7 +253,7 @@ class Board{
 
     }
 
-    void landPiece(vector<int> c, int x, int y, vector<int> start){
+    void landPiece(vector<int> c, int x, int y, vector<int> start, bool& turn){
         cout << "Attempting Landing..." << endl;
 
         vector<int> sq = getSquare(x, y);
@@ -268,12 +268,20 @@ class Board{
             cout << "badPlace" << endl;
             return;
         }
+        //check if it is turn 
+        if((turn && track[c[0]][c[1]].team == 'B') || (!turn && track[c[0]][c[1]].team == 'W')){
+            track[c[0]][c[1]].x = start[0];
+            track[c[0]][c[1]].y = start[1];
+            cout << "Not your turn!!" << endl;
+            return;
+        }
 
         if(!isValidMove(c, sq, start)){
             track[c[0]][c[1]].x = start[0];
             track[c[0]][c[1]].y = start[1];
             return;
         }
+        turn = !turn;
         track[c[0]][c[1]].start = false;
         vector<int> startSQ = getSquare(start[0], start[1]);
         tracker[startSQ[0]][startSQ[1]].filled = false;

@@ -10,6 +10,7 @@ int main()
     bool isMousePressed = false;
     vector<int> start;
     vector<int> currPiece;
+    bool redTurn = true; 
     
     Board* b = new Board();
 
@@ -31,7 +32,7 @@ int main()
             }
             if(event.type == sf::Event::MouseButtonReleased){
                 sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-                b->landPiece(currPiece, mousePosition.x, mousePosition.y, start);
+                b->landPiece(currPiece, mousePosition.x, mousePosition.y, start, redTurn);
                 isMousePressed = false;
             }
         }
@@ -76,6 +77,7 @@ int main()
                     break; // Exit the loop after 5 seconds
                 }
             }
+            redTurn = true;
             delete b;
             b = new Board();
         }
