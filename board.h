@@ -295,7 +295,7 @@ class Board{
         cout << "Landed!!" << endl;
 
         vector<float> loc = centerSquare(text, rect);
-        
+        this->evaluate(track);
         track[c[0]][c[1]].x = loc[0];
         track[c[0]][c[1]].y = loc[1];
     }
@@ -589,7 +589,6 @@ class Board{
     }
     
     bool isValidMove(vector<int> piece, vector<int> sq, vector<int>start){
-        
         if(track[piece[0]][piece[1]].type == 'p'){
             cout << "is a paWN" << endl;
             bool p = false;
@@ -668,4 +667,42 @@ class Board{
         return 0;
     }
 
+    bool evaluate(Piece arr[4][8]){
+        int black = 0;
+        int white = 0;
+        for(int i = 0; i < 4; ++i){
+            for(int j = 0; j < 8; j++){
+                int val = 0;
+                if(track[i][j].taken){
+                    continue;
+                }
+                if(track[i][j].type == 'p'){
+                    val = 1;
+                }
+                else if(track[i][j].type == 'k'){
+                    val = 3;
+                }
+                else if(track[i][j].type == 'b'){
+                    val = 3;
+                }
+                else if(track[i][j].type == 'q'){
+                    val = 9;
+                }
+                else if(track[i][j].type == 'r'){
+                    val = 5;
+                }
+                else{
+                    val = 100;
+                }
+                if(track[i][j].team == 'B'){
+                    black += val;
+                }
+                else{
+                    white += val;
+                }
+            }
+        }
+        cout << "Black: " << black << " White: " << white << endl;
+        return false;
+    }
 };

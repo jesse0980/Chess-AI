@@ -16,6 +16,7 @@ int main()
 
     while (window.isOpen())
     {
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -77,9 +78,9 @@ int main()
                     break; // Exit the loop after 5 seconds
                 }
             }
-            redTurn = true;
             delete b;
             b = new Board();
+            redTurn = true;
         }
     }
 
