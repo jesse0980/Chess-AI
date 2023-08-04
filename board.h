@@ -6,24 +6,8 @@ using namespace std;
 #include <SFML/Graphics.hpp>
 
 #include <SFML/Graphics.hpp>
-class Tile{
-    public:
-        bool filled = false;
-        int fillR = 0;
-        int fillC = 0;
-        int x = -1;
-        int y = -1;
-        string color = "White";
-};
-class Piece{
-    public:
-        char team = 'W';
-        bool taken = false;
-        int x = -1;
-        int y = -1;
-        char type = '0';
-        bool start = true;  
-};
+#include "AI.h"
+
 
 
 class Board{
@@ -174,20 +158,25 @@ class Board{
 
                     //Draw the Squares
                     square.setPosition(x, y);
-                    if(i % 2 == 0 || x == 0){
-                        if(j % 2 == 0 || j == 0){
-                            square.setFillColor(sf::Color::White);
-                        }
-                        else{
-                            square.setFillColor(sf::Color::Blue);
-                        }
+                    if(tracker[i][j].high){
+                        square.setFillColor(sf::Color::Cyan);
                     }
                     else{
-                        if(j % 2 == 0 || j == 0){
-                            square.setFillColor(sf::Color::Blue);
+                        if(i % 2 == 0 || x == 0){
+                            if(j % 2 == 0 || j == 0){
+                                square.setFillColor(sf::Color::White);
+                            }
+                            else{
+                                square.setFillColor(sf::Color::Blue);
+                            }
                         }
                         else{
-                            square.setFillColor(sf::Color::White);
+                            if(j % 2 == 0 || j == 0){
+                                square.setFillColor(sf::Color::Blue);
+                            }
+                            else{
+                                square.setFillColor(sf::Color::White);
+                            }
                         }
                     }
 
@@ -253,6 +242,25 @@ class Board{
 
     }
 
+    vector<vector<int>> highlightSquares(vector<int> c){
+        AI test = AI(track, tracker);
+
+        vector<vector<int>> tmp = test.getValidMoves(track, track[c[0]][c[1]].team, tracker, c[0], c[1]);
+
+        for(int i = 0; i < tmp.size(); i++){
+            tracker[tmp[i][0]][tmp[i][1]].high = true;
+        }
+        return tmp;
+  
+    }
+    void unhighlightSquares(vector<vector<int>> sqs){
+        AI test = AI(track, tracker);
+
+        for(int i = 0; i < sqs.size(); i++){
+            tracker[sqs[i][0]][sqs[i][1]].high = false;
+        }
+    }
+
     void landPiece(vector<int> c, int x, int y, vector<int> start, bool& turn){
         cout << "Attempting Landing..." << endl;
 
@@ -281,6 +289,10 @@ class Board{
             track[c[0]][c[1]].y = start[1];
             return;
         }
+
+ 
+
+
         turn = !turn;
         track[c[0]][c[1]].start = false;
         vector<int> startSQ = getSquare(start[0], start[1]);
@@ -295,9 +307,18 @@ class Board{
         cout << "Landed!!" << endl;
 
         vector<float> loc = centerSquare(text, rect);
-        this->evaluate(track);
         track[c[0]][c[1]].x = loc[0];
         track[c[0]][c[1]].y = loc[1];
+        
+
+        //Delete this, it is for testing!!!
+        // cout << sq[0] << " " << sq[1] << endl;
+        AI test = AI(track, tracker);
+
+        // test.getValidMoves(track, track[c[0]][c[1]].team, tracker);
+  
+        test.evaluate(test.track);
+        //here is where it ends 
     }
 
     bool checkBlackPawn(vector<int> piece, vector<int> sq, vector<int>start){
@@ -667,42 +688,4 @@ class Board{
         return 0;
     }
 
-    bool evaluate(Piece arr[4][8]){
-        int black = 0;
-        int white = 0;
-        for(int i = 0; i < 4; ++i){
-            for(int j = 0; j < 8; j++){
-                int val = 0;
-                if(track[i][j].taken){
-                    continue;
-                }
-                if(track[i][j].type == 'p'){
-                    val = 1;
-                }
-                else if(track[i][j].type == 'k'){
-                    val = 3;
-                }
-                else if(track[i][j].type == 'b'){
-                    val = 3;
-                }
-                else if(track[i][j].type == 'q'){
-                    val = 9;
-                }
-                else if(track[i][j].type == 'r'){
-                    val = 5;
-                }
-                else{
-                    val = 100;
-                }
-                if(track[i][j].team == 'B'){
-                    black += val;
-                }
-                else{
-                    white += val;
-                }
-            }
-        }
-        cout << "Black: " << black << " White: " << white << endl;
-        return false;
-    }
 };

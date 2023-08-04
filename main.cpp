@@ -10,6 +10,7 @@ int main()
     bool isMousePressed = false;
     vector<int> start;
     vector<int> currPiece;
+    vector<vector<int>> highs;
     bool redTurn = true; 
     
     Board* b = new Board();
@@ -29,11 +30,15 @@ int main()
                 currPiece = b->clicked(window, mousePosition.x, mousePosition.y);
                 if(currPiece.size() > 0){
                     start = {b->track[currPiece[0]][currPiece[1]].x, b->track[currPiece[0]][currPiece[1]].y};
+                    highs = b->highlightSquares(currPiece);
                 }
             }
             if(event.type == sf::Event::MouseButtonReleased){
                 sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
                 b->landPiece(currPiece, mousePosition.x, mousePosition.y, start, redTurn);
+                if(currPiece.size() > 0){
+                    b->unhighlightSquares(highs);
+                }
                 isMousePressed = false;
             }
         }
