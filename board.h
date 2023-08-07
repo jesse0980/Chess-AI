@@ -4,7 +4,7 @@ using namespace std;
 #include <vector>
 
 #include <SFML/Graphics.hpp>
-
+#include <chrono>
 #include <SFML/Graphics.hpp>
 #include "AI.h"
 
@@ -143,6 +143,20 @@ class Board{
             return ans;
 
     }
+    void copyPiece(Piece source[4][8], Piece dest[4][8]) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 8; j++) {
+                dest[i][j] = Piece(source[i][j]);
+            }
+        }
+    }
+    void copyTiles(Tile source[8][8], Tile dest[8][8]) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                dest[i][j] = Tile(source[i][j]);
+            }
+        }
+    }
 
     void drawSquares(sf::RenderWindow& window, int width, int height){
             int squareSize = width / boardSize;
@@ -160,6 +174,8 @@ class Board{
                     square.setPosition(x, y);
                     if(tracker[i][j].high){
                         square.setFillColor(sf::Color::Cyan);
+                        square.setOutlineColor(sf::Color::Black);
+                        square.setOutlineThickness(1.0f);
                     }
                     else{
                         if(i % 2 == 0 || x == 0){
@@ -261,8 +277,26 @@ class Board{
         }
     }
 
+    void printArr(){
+        for(int r = 0; r < 4; r++){
+            for(int c = 0; c < 8; c++){
+                vector<int> startSQ = getSquare(track[r][c].y, track[r][c].x);
+                if(startSQ.size() == 0){
+                    cout << track[r][c].x << " bad " << track[r][c].type << " bad " << track[r][c].y << endl;
+                }
+                if(track[r][c].taken){
+                    cout << "taken uh oh!!";
+                }
+                else{
+                    cout << "not taken";
+                }
+            }
+            cout << endl;
+        }
+    }
     void landPiece(vector<int> c, int x, int y, vector<int> start, bool& turn){
         cout << "Attempting Landing..." << endl;
+
 
         vector<int> sq = getSquare(x, y);
         if(c.size() == 0){
@@ -310,15 +344,33 @@ class Board{
         track[c[0]][c[1]].x = loc[0];
         track[c[0]][c[1]].y = loc[1];
         
-
-        //Delete this, it is for testing!!!
-        // cout << sq[0] << " " << sq[1] << endl;
+        // if(turn){
+        // //Delete this, it is for testing!!!
+        // // cout << sq[0] << " " << sq[1] << endl;
         AI test = AI(track, tracker);
+        Piece dest[4][8];
+        copyPiece(track, dest);
+        
+        Tile tileDest[8][8];
+        copyTiles(tracker, tileDest);
+        test.printArr(track, tracker);
+        vector<int> tmp = test.getMove(dest, 'W', tileDest);
+        if(tmp.size() > 0){
+            cout << tmp[0] << " " << tmp[1] << endl;
+        }
+        else{
+            cout << "no move" << endl;
+        }
+        
+        // //test.getValidMoves(track, track[c[0]][c[1]].team, tracker);
 
-        // test.getValidMoves(track, track[c[0]][c[1]].team, tracker);
-  
-        test.evaluate(test.track);
-        //here is where it ends 
+        // test.getMove(track, track[c[0]][c[1]].team, tracker);
+        // turn = !turn;
+        // //test.evaluate(dest);
+        // //here is where it ends 
+        // }
+        // else{
+
     }
 
     bool checkBlackPawn(vector<int> piece, vector<int> sq, vector<int>start){

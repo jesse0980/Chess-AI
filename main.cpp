@@ -1,5 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include <chrono>
 #include "board.h"
 
 int main()
