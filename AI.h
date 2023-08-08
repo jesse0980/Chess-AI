@@ -690,7 +690,7 @@ class AI{
         }
     }
     vector<int> getMove(Piece arr[4][8], char t, Tile tile_arr[8][8]){
-        int max = -1;
+        int max = -1000;
         vector<int> fin;
         int row = -1;
         int col = -1;
