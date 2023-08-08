@@ -262,7 +262,6 @@ class Board{
         AI test = AI(track, tracker);
 
         vector<vector<int>> tmp = test.getValidMoves(track, track[c[0]][c[1]].team, tracker, c[0], c[1]);
-
         for(int i = 0; i < tmp.size(); i++){
             tracker[tmp[i][0]][tmp[i][1]].high = true;
         }
@@ -353,14 +352,14 @@ class Board{
         
         Tile tileDest[8][8];
         copyTiles(tracker, tileDest);
-        test.printArr(track, tracker);
-        vector<int> tmp = test.getMove(dest, 'W', tileDest);
-        if(tmp.size() > 0){
-            cout << tmp[0] << " " << tmp[1] << endl;
-        }
-        else{
-            cout << "no move" << endl;
-        }
+        //test.printArr(track, tracker);
+        vector<int> tmp = test.getMove(dest, 'W', tileDest, 2);
+        // if(tmp.size() > 0){
+        //     cout << tmp[0] << " " << tmp[1] << endl;
+        // }
+        // else{
+        //     cout << "no move" << endl;
+        // }
         
         // //test.getValidMoves(track, track[c[0]][c[1]].team, tracker);
 

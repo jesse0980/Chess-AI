@@ -397,7 +397,7 @@ class AI{
             cout << arr[r][c].x << " king??" << arr[r][c].y << endl;
             return Moves;
         }
-        cout << "King Started: " << startSQ[0] << " " << startSQ[1] << endl;
+        //cout << "King Started: " << startSQ[0] << " " << startSQ[1] << endl;
 
         if(startSQ[0] + 1 < 8 and startSQ[1] + 1 < 8){
             if(tile_arr[startSQ[0] + 1][startSQ[1] + 1].filled){
@@ -576,6 +576,7 @@ class AI{
         vector<vector<int>> moves;
             for(int i = 0; i < 4; i++){
                 for(int j = 0; j < 8; j++){
+
                     if(arr[i][j].team != t || arr[i][j].taken || (i != r && r != -1) || (j != c && c != -1)){
                         continue;
                     }
@@ -669,7 +670,7 @@ class AI{
         arr[row][col].y = loc[1];
 
         vector<int> res = evaluate(arr);
-        return res[1] - res[0];
+        return t == 'W' ? res[1] - res[0] : res[0] - res[1];
 
     }
     void printArr(Piece arr[4][8], Tile tile_arr[8][8]){
@@ -679,6 +680,7 @@ class AI{
                 if(startSQ.size() == 0){
                     cout << arr[r][c].x << " bad " << arr[r][c].type << " bad " << arr[r][c].y << endl;
                 }
+                cout << arr[r][c].team;
                 if(arr[r][c].taken){
                     cout << "taken uh oh!!";
                 }
@@ -689,9 +691,12 @@ class AI{
             cout << endl;
         }
     }
-    vector<int> getMove(Piece arr[4][8], char t, Tile tile_arr[8][8]){
+    vector<int> getMove(Piece arr[4][8], char t, Tile tile_arr[8][8], int depth){
+
         int max = -1000;
         vector<int> fin;
+        Piece update[4][8];
+        Tile updatedTile[8][8];
         int row = -1;
         int col = -1;
         for(int r = 0; r < 4; r++){
@@ -704,9 +709,11 @@ class AI{
                     //printArr(dest);
                     Tile tileDest[8][8];
                     copyTiles(tile_arr, tileDest);
-                    int res = checkMove(dest, t, tileDest, Moves[i], 4, r, c);
+                    int res = checkMove(dest, t, tileDest, Moves[i], depth, r, c);
                     if(res > max){
-                        cout << "result " << res << endl;
+                        //cout << "result " << res << endl;
+                        copyPiece(dest, update);
+                        copyTiles(tileDest, updatedTile);
                         row = r;
                         col = c;
                         max = res;
@@ -715,9 +722,16 @@ class AI{
                 }
             }
         }
-
+        //cout << "reached" << endl;
         //cout << arr[row][col].type << " " << fin[0] << " " << fin[1] << endl;
-        cout << endl;
+        if(depth != 0){
+            cout << "Black Move: " << fin[0] << " " << fin[1] << endl;
+            vector<int> mv = getMove(update, 'B', updatedTile, 0);
+            if(mv.size() > 0){
+                cout << "Whites next best move: col: " << mv[0] << " row: " << mv[1] << endl;
+            }
+        }
+        
         return fin;
     }
 };
