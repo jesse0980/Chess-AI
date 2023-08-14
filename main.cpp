@@ -19,35 +19,42 @@ int main()
 
         sf::Event event;
         while (window.pollEvent(event))
-        {
+        {   
             if (event.type == sf::Event::Closed)
-                window.close();
-            if (event.type == sf::Event::MouseButtonPressed){
+                    window.close();
+            if(!redTurn){
+                if (event.type == sf::Event::MouseButtonPressed){
+                    isMousePressed = true;
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                    currPiece = b->clicked(window, mousePosition.x, mousePosition.y);
+                    if(currPiece.size() > 0){
+                        start = {b->track[currPiece[0]][currPiece[1]].x, b->track[currPiece[0]][currPiece[1]].y};
+                        highs = b->highlightSquares(currPiece);
+                    }
+                }
+                if(event.type == sf::Event::MouseButtonReleased){
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                    int check = b->landPiece(currPiece, mousePosition.x, mousePosition.y, start, redTurn);
+                    if(currPiece.size() > 0){
+                        b->unhighlightSquares(highs);
+                    }
+                    isMousePressed = false;
+                    if(check == 0)
+                        redTurn = true;
+                }
 
-                isMousePressed = true;
-                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-                currPiece = b->clicked(window, mousePosition.x, mousePosition.y);
-                if(currPiece.size() > 0){
-                    start = {b->track[currPiece[0]][currPiece[1]].x, b->track[currPiece[0]][currPiece[1]].y};
-                    highs = b->highlightSquares(currPiece);
+                if(isMousePressed){
+                        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+
+                        if(currPiece.size() > 0){
+                            b->setPiece(currPiece, mousePosition.x, mousePosition.y);
+                        } 
                 }
             }
-            if(event.type == sf::Event::MouseButtonReleased){
-                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-                b->landPiece(currPiece, mousePosition.x, mousePosition.y, start, redTurn);
-                if(currPiece.size() > 0){
-                    b->unhighlightSquares(highs);
-                }
-                isMousePressed = false;
+            else{
+                b->makeAiMove();
+                redTurn = false;
             }
-        }
-        if(isMousePressed){
-                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-
-                if(currPiece.size() > 0){
-                    b->setPiece(currPiece, mousePosition.x, mousePosition.y);
-                }
-                
         }
 
         window.clear();

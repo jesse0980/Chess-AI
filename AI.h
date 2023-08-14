@@ -738,32 +738,9 @@ class AI{
                 }
             }
         }
-        //cout << "reached" << endl;
-        //cout << arr[row][col].type << " " << fin[0] << " " << fin[1] << endl;
-        // if(depth != 0){
-        //     cout << "Black Move: " << fin[0] << " " << fin[1] << endl;
-        //     vector<int> mv = getMove(update, 'B', updatedTile, 0);
-        //     if(mv.size() > 0){
-        //         cout << "Whites next best move: col: " << mv[0] << " row: " << mv[1] << endl;
-        //     }
-        // }
-        
+
         return fin;
     }
-
-    // get move:
-
-    //     all move loop:
-
-    //         move the move
-    //         get next team move 
-    //         so on until depth 
-
-    //         now have array with all moves made
-    //         evaluate it 
-
-    //         determine if current move was greater than max
-
 
 
 

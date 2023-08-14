@@ -293,40 +293,40 @@ class Board{
             cout << endl;
         }
     }
-    void landPiece(vector<int> c, int x, int y, vector<int> start, bool& turn){
+    int landPiece(vector<int> c, int x, int y, vector<int> start, bool& turn){
         cout << "Attempting Landing..." << endl;
 
 
         vector<int> sq = getSquare(x, y);
         if(c.size() == 0){
             cout << "Failed!" << endl;
-            return;
+            return -1;
         }
         if(sq.size() == 0){
             cout << "Failed!" << endl;
             track[c[0]][c[1]].x = start[0];
             track[c[0]][c[1]].y = start[1];
             cout << "badPlace" << endl;
-            return;
+            return -1;
         }
         //check if it is turn 
         if((turn && track[c[0]][c[1]].team == 'B') || (!turn && track[c[0]][c[1]].team == 'W')){
             track[c[0]][c[1]].x = start[0];
             track[c[0]][c[1]].y = start[1];
             cout << "Not your turn!!" << endl;
-            return;
+            return -1;
         }
 
         if(!isValidMove(c, sq, start)){
             track[c[0]][c[1]].x = start[0];
             track[c[0]][c[1]].y = start[1];
-            return;
+            return -1;
         }
 
  
 
 
-        turn = !turn;
+        //turn = !turn;
         track[c[0]][c[1]].start = false;
         vector<int> startSQ = getSquare(start[0], start[1]);
         tracker[startSQ[0]][startSQ[1]].filled = false;
@@ -342,36 +342,7 @@ class Board{
         vector<float> loc = centerSquare(text, rect);
         track[c[0]][c[1]].x = loc[0];
         track[c[0]][c[1]].y = loc[1];
-        
-        // if(turn){
-        // //Delete this, it is for testing!!!
-        // // cout << sq[0] << " " << sq[1] << endl;
-        if(turn){
-            AI test = AI(track, tracker);
-            Piece dest[4][8];
-            copyPiece(track, dest);
-            
-            Tile tileDest[8][8];
-            copyTiles(tracker, tileDest);
-            //test.printArr(track, tracker);
-
-            vector<int> tmp = test.getMove(dest, 'W', tileDest, 4);
-            if(tmp.size() > 0){
-                cout << track[tmp[2]][tmp[3]].type << " " << tmp[0] << " " << tmp[1] << endl;
-            }
-            else{
-                cout << "no move" << endl;
-            }
-        }
-        
-        // //test.getValidMoves(track, track[c[0]][c[1]].team, tracker);
-
-        // test.getMove(track, track[c[0]][c[1]].team, tracker);
-        // turn = !turn;
-        // //test.evaluate(dest);
-        // //here is where it ends 
-        // }
-        // else{
+        return 0;
 
     }
 
@@ -742,4 +713,38 @@ class Board{
         return 0;
     }
 
+    void makeAiMove(){
+            AI test = AI(track, tracker);
+            Piece dest[4][8];
+            copyPiece(track, dest);
+            
+            Tile tileDest[8][8];
+            copyTiles(tracker, tileDest);
+            //test.printArr(track, tracker);
+
+            vector<int> tmp = test.getMove(dest, 'W', tileDest, 3);
+            if(tmp.size() > 0){
+                cout << track[tmp[2]][tmp[3]].type << " " << tmp[0] << " " << tmp[1] << endl;
+            }
+            else{
+                cout << "no move" << endl;
+            }
+            track[tmp[2]][tmp[3]].start = false;
+            vector<int> startSQ = getSquare(track[tmp[2]][tmp[3]].x, track[tmp[2]][tmp[3]].y);
+            tracker[startSQ[0]][startSQ[1]].filled = false;
+
+            tracker[tmp[0]][tmp[1]].filled = true;
+            checkFilled({tmp[2], tmp[3]}, {tmp[0], tmp[1]}, startSQ);
+
+            sf::RectangleShape rect(sf::Vector2f(50, 50));
+            rect.setPosition(tracker[tmp[0]][tmp[1]].x,tracker[tmp[0]][tmp[1]].y);
+            
+            sf::Text text("Centered Text", font, 30);
+            text.setString(track[tmp[2]][tmp[3]].type);
+            cout << "Landed!!" << endl;
+
+            vector<float> loc = centerSquare(text, rect);
+            track[tmp[2]][tmp[3]].x = loc[0];
+            track[tmp[2]][tmp[3]].y = loc[1];
+    }
 };
