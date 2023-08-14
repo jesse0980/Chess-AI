@@ -230,7 +230,6 @@ class AI{
         vector<int> sq2 = {startSQ[0] + 1, startSQ[1] + 2};
         if(sq2[1] < 8 && sq2[0] < 8){
             if(tile_arr[sq2[0]][sq2[1]].filled){
-                    cout << "accessed" << endl;
                     vector<int> piece = getFilledPiece(tile_arr, sq2, arr);
                     if(arr[piece[0]][piece[1]].team != arr[r][c].team){
                             Moves.push_back(sq2);
@@ -692,7 +691,9 @@ class AI{
         }
     }
     vector<int> getMove(Piece arr[4][8], char t, Tile tile_arr[8][8], int depth){
-
+        if(depth == 0){
+            return {};
+        }
         int max = -1000;
         vector<int> fin;
         Piece update[4][8];
@@ -704,34 +705,66 @@ class AI{
                 vector<vector<int>> Moves = getValidMoves(arr, t, tile_arr, r, c);
                 for(int i = 0; i < Moves.size(); i++){
                     //cout << Moves[i][0] << Moves[i][1] << endl;
+
                     Piece dest[4][8];
                     copyPiece(arr, dest);
                     //printArr(dest);
                     Tile tileDest[8][8];
                     copyTiles(tile_arr, tileDest);
                     int res = checkMove(dest, t, tileDest, Moves[i], depth, r, c);
+
+                    char tmpTeam = t == 'B' ? 'W' : 'B';
+                    //cout << "Next Move for: " << t << " Type: " << arr[r][c].type << endl;
+                    vector<int> nxt = getMove(dest, tmpTeam, tileDest, depth - 1);
+                    if(nxt.size() != 0){
+                        //cout << nxt[0] << nxt[1] << endl;
+                        int test = checkMove(dest, t, tileDest, nxt, depth, nxt[2], nxt[3]);
+                        res = test;
+                        //cout << "test: " << test << endl;
+                        //res = test;
+                    }
+                    //printArr(dest, tileDest);
                     if(res > max){
-                        //cout << "result " << res << endl;
+                        //cout << t << " result " << res << " Depth: " << depth << " Type: " << arr[r][c].type << endl;
                         copyPiece(dest, update);
                         copyTiles(tileDest, updatedTile);
                         row = r;
                         col = c;
                         max = res;
                         fin = Moves[i];
+                        fin.push_back(row);
+                        fin.push_back(col);
                     }
                 }
             }
         }
         //cout << "reached" << endl;
         //cout << arr[row][col].type << " " << fin[0] << " " << fin[1] << endl;
-        if(depth != 0){
-            cout << "Black Move: " << fin[0] << " " << fin[1] << endl;
-            vector<int> mv = getMove(update, 'B', updatedTile, 0);
-            if(mv.size() > 0){
-                cout << "Whites next best move: col: " << mv[0] << " row: " << mv[1] << endl;
-            }
-        }
+        // if(depth != 0){
+        //     cout << "Black Move: " << fin[0] << " " << fin[1] << endl;
+        //     vector<int> mv = getMove(update, 'B', updatedTile, 0);
+        //     if(mv.size() > 0){
+        //         cout << "Whites next best move: col: " << mv[0] << " row: " << mv[1] << endl;
+        //     }
+        // }
         
         return fin;
     }
+
+    // get move:
+
+    //     all move loop:
+
+    //         move the move
+    //         get next team move 
+    //         so on until depth 
+
+    //         now have array with all moves made
+    //         evaluate it 
+
+    //         determine if current move was greater than max
+
+
+
+
 };

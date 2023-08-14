@@ -346,20 +346,23 @@ class Board{
         // if(turn){
         // //Delete this, it is for testing!!!
         // // cout << sq[0] << " " << sq[1] << endl;
-        AI test = AI(track, tracker);
-        Piece dest[4][8];
-        copyPiece(track, dest);
-        
-        Tile tileDest[8][8];
-        copyTiles(tracker, tileDest);
-        //test.printArr(track, tracker);
-        vector<int> tmp = test.getMove(dest, 'W', tileDest, 2);
-        // if(tmp.size() > 0){
-        //     cout << tmp[0] << " " << tmp[1] << endl;
-        // }
-        // else{
-        //     cout << "no move" << endl;
-        // }
+        if(turn){
+            AI test = AI(track, tracker);
+            Piece dest[4][8];
+            copyPiece(track, dest);
+            
+            Tile tileDest[8][8];
+            copyTiles(tracker, tileDest);
+            //test.printArr(track, tracker);
+
+            vector<int> tmp = test.getMove(dest, 'W', tileDest, 4);
+            if(tmp.size() > 0){
+                cout << track[tmp[2]][tmp[3]].type << " " << tmp[0] << " " << tmp[1] << endl;
+            }
+            else{
+                cout << "no move" << endl;
+            }
+        }
         
         // //test.getValidMoves(track, track[c[0]][c[1]].team, tracker);
 
