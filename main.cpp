@@ -4,13 +4,32 @@
 int main()
 {
     const int windowWidth = 400;
-    const int windowHeight = 400;
+    const int windowHeight = 475;
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Jesse's Chess");
     bool isMousePressed = false;
+    sf::Font font;
+    font.loadFromFile("Roboto-Black.ttf");
     vector<int> start;
     vector<int> currPiece;
     vector<vector<int>> highs;
     bool redTurn = true; 
+
+    //AI Thinkibng Display
+    sf::Text ai_thinks("AI is Thinking...", font, 34);
+    ai_thinks.setFillColor(sf::Color::White);
+    ai_thinks.setStyle(sf::Text::Bold);
+
+    float x = (window.getSize().x - ai_thinks.getLocalBounds().width) / 2 + 62;
+    float y = (window.getSize().y - ai_thinks.getLocalBounds().height) - 25;
+    ai_thinks.setPosition(x, y);
+
+    //AI Picture
+    sf::Texture texture;
+    texture.loadFromFile("images/IMG_3792.PNG");
+    sf::Sprite john(texture);
+    john.setScale(.07, .07);
+    john.setPosition(40, 400);
+
     
     Board* b = new Board();
 
@@ -51,14 +70,22 @@ int main()
                         } 
                 }
             }
-            else{
-                b->makeAiMove();
-                redTurn = false;
-            }
+
         }
 
         window.clear();
         b->drawBoard(window, windowWidth, windowHeight);
+        if(redTurn){
+                ai_thinks.setFillColor(sf::Color::White);
+                window.clear();
+                window.draw(john);
+                window.draw(ai_thinks);
+                b->drawBoard(window, windowWidth, windowHeight);
+                window.display();
+                if(b->makeAiMove() == 0)
+                    redTurn = false;
+                ai_thinks.setFillColor(sf::Color::Transparent);
+        }
         window.display();
         
         int over = b->isOver();
@@ -66,10 +93,9 @@ int main()
             auto start = std::chrono::high_resolution_clock::now();
             window.clear(sf::Color::Black);
 
-            sf::Font font;
-            font.loadFromFile("Roboto-Black.ttf");
             
-            string s = over == 1 ? "Black Lost" : "Red Lost";
+            
+            string s = over == 1 ? "You Lost" : "You Beat Me!";
             sf::Text text(s, font, 60);
             text.setFillColor(sf::Color::White);
             text.setStyle(sf::Text::Bold);

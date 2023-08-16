@@ -714,18 +714,13 @@ class AI{
                     int res = checkMove(dest, t, tileDest, Moves[i], depth, r, c);
 
                     char tmpTeam = t == 'B' ? 'W' : 'B';
-                    //cout << "Next Move for: " << t << " Type: " << arr[r][c].type << endl;
                     vector<int> nxt = getMove(dest, tmpTeam, tileDest, depth - 1);
                     if(nxt.size() != 0){
-                        //cout << nxt[0] << nxt[1] << endl;
                         int test = checkMove(dest, t, tileDest, nxt, depth, nxt[2], nxt[3]);
                         res = test;
-                        //cout << "test: " << test << endl;
-                        //res = test;
+
                     }
-                    //printArr(dest, tileDest);
-                    if(res > max){
-                        //cout << t << " result " << res << " Depth: " << depth << " Type: " << arr[r][c].type << endl;
+                    if(res > max || (res == max && (abs(4 - Moves[i][0]) + abs(4 - Moves[i][1])) < (abs(4 - fin[0]) + abs(4 - fin[1])))){
                         copyPiece(dest, update);
                         copyTiles(tileDest, updatedTile);
                         row = r;

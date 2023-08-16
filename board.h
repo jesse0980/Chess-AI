@@ -713,7 +713,7 @@ class Board{
         return 0;
     }
 
-    void makeAiMove(){
+    int makeAiMove(){
             AI test = AI(track, tracker);
             Piece dest[4][8];
             copyPiece(track, dest);
@@ -728,6 +728,7 @@ class Board{
             }
             else{
                 cout << "no move" << endl;
+                return -1;
             }
             track[tmp[2]][tmp[3]].start = false;
             vector<int> startSQ = getSquare(track[tmp[2]][tmp[3]].x, track[tmp[2]][tmp[3]].y);
@@ -746,5 +747,6 @@ class Board{
             vector<float> loc = centerSquare(text, rect);
             track[tmp[2]][tmp[3]].x = loc[0];
             track[tmp[2]][tmp[3]].y = loc[1];
+            return 0;
     }
 };
