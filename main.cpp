@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "board.h"
-
+//command to build it: g++ main.cpp -o main -I"C:\SFML-2.6.0\SFML-2.6.0\include" -L"C:\SFML-2.6.0\SFML-2.6.0\lib" -lsfml-graphics -lsfml-window -lsfml-system
 int main()
 {
     const int windowWidth = 400;
@@ -14,7 +14,7 @@ int main()
     vector<vector<int>> highs;
     bool redTurn = true; 
 
-    //AI Thinkibng Display
+    //AI Thinking Display
     sf::Text ai_thinks("AI is Thinking...", font, 34);
     ai_thinks.setFillColor(sf::Color::White);
     ai_thinks.setStyle(sf::Text::Bold);
@@ -75,6 +75,7 @@ int main()
 
         window.clear();
         b->drawBoard(window, windowWidth, windowHeight);
+        
         if(redTurn){
                 ai_thinks.setFillColor(sf::Color::White);
                 window.clear();

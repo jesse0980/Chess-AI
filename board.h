@@ -16,6 +16,7 @@ class Board{
     Piece track[4][8];
     sf::Font font;
     const int boardSize = 8;
+
     Board(){
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; ++j){
@@ -50,6 +51,9 @@ class Board{
             tmp.x = c[0];
             tmp.y = c[1];
 
+            //Set the text image 
+            tmp.imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_pawn_1x_ns.png";
+
             track[2][i] = tmp;
         }
 
@@ -79,8 +83,8 @@ class Board{
         for(int i = 0; i < 8; i++){
             Piece tmp; 
             tmp.type = 'p';
-            
 
+            
             sf::RectangleShape rect(sf::Vector2f(50, 50));
             rect.setPosition(i * 50, 50);
 
@@ -91,6 +95,8 @@ class Board{
 
             tmp.x = c[0];
             tmp.y = c[1];
+
+
 
             track[0][i] = tmp;
         }
@@ -107,7 +113,6 @@ class Board{
             text.setString(tmp.type);
 
             vector<float> c = centerSquare(text, rect);
-
             tmp.x = c[0];
             tmp.y = c[1];
 
@@ -215,6 +220,16 @@ class Board{
                     }
                     else{
                         text.setFillColor(sf::Color::Black);
+                        //Set Picture
+                        sf::Texture texture;
+                        if(track[i][j].imgPath.length() != 0){
+                        // cout << track[i][j].imgPath << endl;
+                            texture.loadFromFile(track[i][j].imgPath);
+                            sf::Sprite pieceImg(texture);
+                            pieceImg.setScale(.1, .1);
+                            pieceImg.setPosition(track[i][j].x, track[i][j].y);
+                            window.draw(pieceImg);
+                        }
                     }
                     window.draw(text);
                 }
@@ -238,14 +253,26 @@ class Board{
                     if (track[i][j].x == -1 || track[i][j].taken){
                         continue;
                     }
-                    sf::Text text;
-                    text.setFont(font);
-                    text.setString(track[i][j].type);
-                    text.setPosition(track[i][j].x, track[i][j].y);
-                     if (text.getGlobalBounds().contains(x, y)) {
-                        coord.push_back(i);
-                        coord.push_back(j);
-                        return coord;
+                    // sf::Text text;
+                    // text.setFont(font);
+                    // text.setString(track[i][j].type);
+                    // text.setPosition(track[i][j].x, track[i][j].y);
+                    //  if (text.getGlobalBounds().contains(x, y)) {
+                    //     coord.push_back(i);
+                    //     coord.push_back(j);
+                    //     return coord;
+                    // }
+                    if(track[i][j].imgPath.length() != 0){
+                            sf::Texture texture;
+                            texture.loadFromFile(track[i][j].imgPath);
+                            sf::Sprite pieceImg(texture);
+                            pieceImg.setScale(.1, .1);
+                            pieceImg.setPosition(track[i][j].x, track[i][j].y);
+                        if (pieceImg.getGlobalBounds().contains(x, y)) {
+                            coord.push_back(i);
+                            coord.push_back(j);
+                            return coord;
+                        }
                     }
                 }
         }

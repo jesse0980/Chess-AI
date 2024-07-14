@@ -7,7 +7,7 @@
                 "C:/SFML-2.6.0/SFML-2.6.0/include"
             ],
             "defines": [],
-            "compilerPath": "C:/msys64/mingw64/bin/gcc.exe",
+            "compilerPath": "C:/Strawberry/c/bin/gcc.exe",
             "cStandard": "${default}",
             "cppStandard": "${default}",
             "intelliSenseMode": "windows-gcc-x64",
