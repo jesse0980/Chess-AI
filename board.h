@@ -52,8 +52,8 @@ class Board{
             tmp.y = c[1];
 
             //Set the text image 
-            tmp.imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_pawn_1x_ns.png";
-
+            this->setImagePath('p', 'b', &tmp);
+            
             track[2][i] = tmp;
         }
 
@@ -61,7 +61,10 @@ class Board{
         for(int i = 0; i < pieces.length(); i++){
             Piece tmp; 
             tmp.type = pieces[i];
+
             
+            //Set the text image 
+            this->setImagePath(pieces[i], 'b', &tmp);
 
             sf::RectangleShape rect(sf::Vector2f(50, 50));
             rect.setPosition(i * 50, 350);
@@ -97,6 +100,8 @@ class Board{
             tmp.y = c[1];
 
 
+            //Set the text image 
+            this->setImagePath('p', 'w', &tmp);
 
             track[0][i] = tmp;
         }
@@ -105,6 +110,8 @@ class Board{
             Piece tmp; 
             tmp.type = pieces[i];
             
+            //Set the text image 
+            this->setImagePath(pieces[i], 'w', &tmp);
 
             sf::RectangleShape rect(sf::Vector2f(50, 50));
             rect.setPosition(i * 50, 0);
@@ -139,8 +146,8 @@ class Board{
 
     vector<float> centerSquare( sf::Text text,  sf::RectangleShape rect){
             
-            float textX = (rect.getPosition().x + (rect.getSize().x - 0) / 2) - 7;
-            float textY = (rect.getPosition().y + (rect.getSize().y - 0) / 2) - 19;
+            float textX = (rect.getPosition().x + (rect.getSize().x - 0) / 2) - 15;
+            float textY = (rect.getPosition().y + (rect.getSize().y - 0) / 2) - 17;
 
             vector<float> ans;
             ans.push_back(textX);
@@ -220,18 +227,17 @@ class Board{
                     }
                     else{
                         text.setFillColor(sf::Color::Black);
-                        //Set Picture
-                        sf::Texture texture;
-                        if(track[i][j].imgPath.length() != 0){
-                        // cout << track[i][j].imgPath << endl;
-                            texture.loadFromFile(track[i][j].imgPath);
-                            sf::Sprite pieceImg(texture);
-                            pieceImg.setScale(.1, .1);
-                            pieceImg.setPosition(track[i][j].x, track[i][j].y);
-                            window.draw(pieceImg);
-                        }
                     }
-                    window.draw(text);
+
+                    //Set Picture
+                    sf::Texture texture;
+                    texture.loadFromFile(track[i][j].imgPath);
+                    sf::Sprite pieceImg(texture);
+                    pieceImg.setScale(.1, .1);
+                    pieceImg.setPosition(track[i][j].x, track[i][j].y);
+
+                    window.draw(pieceImg);
+                    // window.draw(text);
                 }
             }
 
@@ -749,7 +755,7 @@ class Board{
             copyTiles(tracker, tileDest);
             //test.printArr(track, tracker);
 
-            vector<int> tmp = test.getMove(dest, 'W', tileDest, 3);
+            vector<int> tmp = test.getMove(dest, 'W', tileDest, 4);
             if(tmp.size() > 0){
                 cout << track[tmp[2]][tmp[3]].type << " " << tmp[0] << " " << tmp[1] << endl;
             }
@@ -776,4 +782,55 @@ class Board{
             track[tmp[2]][tmp[3]].y = loc[1];
             return 0;
     }
+
+    void setImagePath(char pieceType, char team, Piece* tmp){
+        if(team == 'b'){
+            if(pieceType == 'r'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_rook_1x_ns.png";
+            }
+            else if(pieceType == 'q'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_queen_1x_ns.png";
+            }
+            else if(pieceType == 'k'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_knight_1x_ns.png";
+            }
+            else if(pieceType == 'q'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_bishop_1x_ns.png";
+            }
+            else if(pieceType == 'K'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_king_1x_ns.png";
+            }
+            else if(pieceType == 'b'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_bishop_1x_ns.png";
+            }
+            else{
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/b_pawn_1x_ns.png";
+            }
+        }
+        else{
+            if(pieceType == 'r'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_rook_1x_ns.png";
+            }
+            else if(pieceType == 'q'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_queen_1x_ns.png";
+            }
+            else if(pieceType == 'k'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_knight_1x_ns.png";
+            }
+            else if(pieceType == 'q'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_bishop_1x_ns.png";
+            }
+            else if(pieceType == 'K'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_king_1x_ns.png";
+            }
+            else if(pieceType == 'b'){
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_bishop_1x_ns.png";
+            }
+            else{
+                tmp->imgPath = "images/pieces/JohnPablok Cburnett Chess set/PNGs/No shadow/1x/w_pawn_1x_ns.png";
+            }
+        }
+            
+    }
+
 };

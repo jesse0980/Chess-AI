@@ -713,6 +713,9 @@ class AI{
                     copyTiles(tile_arr, tileDest);
                     int res = checkMove(dest, t, tileDest, Moves[i], depth, r, c);
 
+                    if (res <= max){ //TODO: edit this to be more dynamic
+                        continue;
+                    }
                     char tmpTeam = t == 'B' ? 'W' : 'B';
                     vector<int> nxt = getMove(dest, tmpTeam, tileDest, depth - 1);
                     if(nxt.size() != 0){
