@@ -2,7 +2,8 @@
 I created a chess game desktop app, with a custom computer AI, only utilizing C++ and the SFML library.
 The AI is able to change and update its behavior based on the individual play of the user.
 
-![image](https://github.com/jesse0980/Chess-AI/assets/80278680/ee258ae0-b82e-45fb-af98-e3ac1b1856d8)
+![image](https://github.com/user-attachments/assets/44e5000a-386d-4db3-820e-3a68178d7abd)
+
 
 The game is still in development, but the basic functionality and computer player algorithm is there.
 
